@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./index.js"></script>
+    <style>
+        .content {
+            display: flex;
+            color: white;
+        }
+
+        .content .rect1 {
+            width: 200px;
+            height: 200px;
+            background-color: green;
+        }
+
+        .content .rect2 {
+            width: 200px;
+            height: 200px;
+            background-color: orange;
+        }
+
+        .content .rect1.selected {
+            width: 200px;
+            height: 200px;
+            background-color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div id="root" class="content">
+        <div class="rect1" data-className-bind="class1" data-text-bind="rect1" data-event-click="clickThenChange"></div>
+        <div class="rect2" data-text-bind="rect2"></div>
+    </div>
+    <script>
+        const vm = new ViewModel({
+            root: 'root',
+            data: () => {
+                return {
+                    rect1: 'green',
+                    rect2: 'orange',
+                    class1: 'rect1'
+                }
+            },
+            method: {
+                clickThenChange: function() {
+                    this.rect1 = 'red';
+                    this.rect2 = 'blue';
+                    this.class1 = "rect1 selected";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
