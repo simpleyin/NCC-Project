@@ -59,6 +59,8 @@ function ViewModel(options) {
     this.local = options.local || {};
     this._inited = false;
     this._render = false;
+    this._lastActiveEl = null;
+    this._watch = options.watch || {};
 
     this._init();
 
@@ -92,7 +94,12 @@ ViewModel.prototype._initData = function() {
                 return this._data[key];
             },
             set(value) {
+                const oldValue = this._data[key];
                 this._data[key] = value;
+                // bind watch
+                if (this._watch[key]) {
+                    this._watch[key].call(this, value, oldValue);
+                }
             }
         })
     }
@@ -150,6 +157,7 @@ ViewModel.prototype._compile = function() {
         }
         if (clickEvent && !_vm._inited) {
             node.addEventListener('click', function(event) {
+                this._lastActiveEl = event.target;
                 if (this[clickEvent]) {
                     this[clickEvent](event);
                 }
@@ -157,6 +165,7 @@ ViewModel.prototype._compile = function() {
         }
         if (inputEvent && !_vm._inited) {
             node.addEventListener('input', function(event) {
+                this._lastActiveEl = event.target;
                 if (this[inputEvent]) {
                     this[inputEvent](event);
                 }
@@ -164,6 +173,7 @@ ViewModel.prototype._compile = function() {
         }
         if (keyDownEvent && !_vm._inited) {
             node.addEventListener('keydown', function(event) {
+                this._lastActiveEl = event.target;
                 if (this[keyDownEvent]) {
                     this[keyDownEvent](event);
                 }
@@ -171,6 +181,7 @@ ViewModel.prototype._compile = function() {
         }
         if (keyUpEvent && !_vm._inited) {
             node.addEventListener('keyup', function(event) {
+                this._lastActiveEl = event.target;
                 if (this[keyUpEvent]) {
                     this[keyUpEvent](event);
                 }
@@ -217,9 +228,12 @@ ViewModel.prototype.render = async function() {
                 document.getElementsByTagName('body')[0].appendChild(this._vnode);
                 this._render = false;
 
-                // TODO 由于没有给每个指令设置watcher，也没有组件系统，导致刷新时页面全部刷新textarea失焦
-                const node = document.getElementsByClassName('chat-input')[0];
-                node.focus();
+                // TODO 没有组件系统暂时用className作为uid
+                const uid = this._lastActiveEl ? this._lastActiveEl.className : null;
+                const node = document.getElementsByClassName(uid);
+                if (node && node[0]) {
+                    node[0].focus();
+                }
                 resolve();
             }.bind(this));
         })

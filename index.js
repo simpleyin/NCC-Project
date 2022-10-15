@@ -25,6 +25,15 @@ const vm = new ViewModel({
             this.local.keyMap = new Map();
         }
     },
+    watch: {
+        wordList: function(newValue) {
+            //每当word增加后，对应的弹窗位置需要动态调整
+            setTimeout(() => {
+                const list = document.getElementsByClassName('common-words-list')[0];
+                this.util.popper(list, newValue.length);
+            });
+        }
+    },
     method: {
         createWordInput: function(event) {
             const value = event.target.value;
