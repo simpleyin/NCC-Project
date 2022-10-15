@@ -16,8 +16,6 @@ Utils.prototype.getValue = function(object, key) {
     return value;
 }
 
-Utils.prototype.debounce = function(func, _this) {}
-
 Utils.prototype.isOnlyGivenItemTruthy = function(map, keys) {
     let temKeys = [...keys];
     for (let [k, v] of map.entries()) {
