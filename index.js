@@ -62,7 +62,7 @@ const vm = new ViewModel({
                         const list = document.getElementsByClassName('common-words-list')[0];
                         this.util.popper(list, this.wordList.length);
                     });
-                }, 300);
+                }, 500);
             }
             //同时按下ctrl + number直接输入框中输入热键
             if (this.util.isOnlyGivenItemTruthy(this.local.keyMap, [17, '49-57'])) {
