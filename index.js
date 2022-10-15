@@ -56,18 +56,25 @@ const vm = new ViewModel({
 
             //长按ctrl展示列表
             if (this.util.isOnlyGivenItemTruthy(this.local.keyMap, [17])) {
+                this.showWordCreate = false;
                 this.keyDownTime = Date.now();
                 this.keyDownTimer = setTimeout(() => {
                     this.showWordList = true;
+                    //每当word增加后，对应的弹窗位置需要动态调整
+                    setTimeout(() => {
+                        const list = document.getElementsByClassName('common-words-list')[0];
+                        this.util.popper(list, this.wordList.length);
+                    });
                 }, 500);
             }
             //同时按下ctrl + number直接输入框中输入热键
             if (this.util.isOnlyGivenItemTruthy(this.local.keyMap, [17, '49-57'])) {
                 const index = event.keyCode - 49;
                 this.chatInputValue = event.target.value;
-                // TODO 实现view->model的绑定
+                // TODO 实现view->model的绑定，暂时在这里去除value中的序号
+                const value = this.wordList[index].value;
                 try {
-                    this.chatInputValue = this.chatInputValue + this.wordList[index].value;
+                    this.chatInputValue = this.chatInputValue + value.split(':')[1].trim();
                 } catch(e) {
                     console.log(e);
                 }
@@ -95,7 +102,8 @@ const vm = new ViewModel({
             }
             if (event.keyCode === 13 && this.showWordList) {
                 const t = this.chatInputValue.substr(0, this.chatInputValue.length - 1);
-                this.chatInputValue = (t + this.wordList[this.currentSelect].value).trim();
+                const value = this.wordList[this.currentSelect].value.split(':')[1].trim();
+                this.chatInputValue = (t + value).trim();
                 this.showWordList = false;
             }
         },

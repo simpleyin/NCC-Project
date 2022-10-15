@@ -44,6 +44,10 @@ Utils.prototype.isOnlyGivenItemTruthy = function(map, keys) {
     return true;
 }
 
+Utils.prototype.popper = function(element, number) {
+    element.style.top = (-80 - (number * (number > 1 ? 28 : 40))) + 'px';
+}
+
 //View Model, 视图模型代码，负责响应式和视图更新
 function ViewModel(options) {
     this._data = options.data;
@@ -217,7 +221,7 @@ ViewModel.prototype.render = async function() {
                 const node = document.getElementsByClassName('chat-input')[0];
                 node.focus();
                 resolve();
-            }.bind(this), 50);
+            }.bind(this));
         })
     }
 }
